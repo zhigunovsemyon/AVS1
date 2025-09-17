@@ -1,4 +1,5 @@
 #include <omp.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -45,10 +46,25 @@ static void third()
 	puts("Параллельный регион 3");
 }
 
+static void fourth(bool dynamic)
+{
+	printf("\nЗадание 4. Динамический режим %s\n",
+	       dynamic ? "включен" : "выключен");
+
+	omp_set_dynamic(dynamic);
+#pragma omp parallel num_threads(128)
+	{
+#pragma omp master
+		printf("Число потоков: %d\n", omp_get_num_threads());
+	}
+}
+
 int main()
 {
 	first();
 	second();
 	third();
+	fourth(false);
+	fourth(true);
 	return 0;
 }
