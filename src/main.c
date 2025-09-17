@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 static void first()
 {
@@ -59,6 +60,25 @@ static void fourth(bool dynamic)
 	}
 }
 
+static void fifth()
+{
+	puts("\nЗадание 5");
+	char buf[10];
+	fgets(buf, 9, stdin);
+	bool parallel = !strcmp("parallel", buf);
+	bool serial = !strncmp(buf, "serial", strlen("serial"));
+	if (!(parallel || serial)) {
+		fputs("Ввод не распознан!\n", stderr);
+		return;
+	}
+
+#pragma omp parallel if (parallel)
+	{
+#pragma omp master
+		printf("Число потоков: %d\n", omp_get_num_threads());
+	}
+}
+
 int main()
 {
 	first();
@@ -66,5 +86,6 @@ int main()
 	third();
 	fourth(false);
 	fourth(true);
+	fifth();
 	return 0;
 }
