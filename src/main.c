@@ -1,5 +1,6 @@
 #include <omp.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 static void first()
 {
@@ -28,9 +29,26 @@ static void second()
 	printf("Число порождённых потоков: %d\n", born_thread_count);
 }
 
+static void third()
+{
+	puts("\nЗадание 3");
+	printf("OMP_NUM_THREADS = %s\n", getenv("OMP_NUM_THREADS"));
+
+#pragma omp parallel // OMP_NUM_THREADS
+	puts("Параллельный регион 1");
+
+#pragma omp parallel num_threads(3)
+	puts("Параллельный регион 2");
+
+	omp_set_num_threads(4);
+#pragma omp parallel // fn ^^^
+	puts("Параллельный регион 3");
+}
+
 int main()
 {
 	first();
 	second();
+	third();
 	return 0;
 }
